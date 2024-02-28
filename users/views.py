@@ -7,17 +7,16 @@ from django.contrib.auth import authenticate, login
 from rest_framework.views import APIView
 from rest_framework import viewsets
 from rest_framework.decorators import api_view, permission_classes, action
+from .serializers import *
 
-# Create your views here.
-
+@api_view(['POST'])
+@permission_classes([AllowAny])
 def signup(request):
-    username = request.POST["username"]
-    first_name = request.POST["first_name"]
-    last_name = request.POST["last_name"]
-    phone_number = request.POST["phone_number"]
-    password = request.POST["password"]
-
-
+    username = request.data.get("username")
+    first_name = request.data.get("first_name")
+    last_name = request.data.get("last_name")
+    phone_number = request.data.get("phone_number")
+    password = request.data.get("password")
     new_user = IMUser.objects.create(
         username=username,
         first_name=first_name,
@@ -26,6 +25,9 @@ def signup(request):
         )
     new_user.set_password(password)
     new_user.save()
+    new_user.generate_auth_token()
+    serializer = UserSerializer(new_user, many=False)
+    return Response({"message": "Account successfully created", "result": serializer.data})
 
 
 class UserViewSet(viewsets.ModelViewSet):
