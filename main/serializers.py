@@ -27,3 +27,14 @@ class ClassScheduleSerializer(serializers.Serializer):
     course = CourseSerializer(many=False)
     cohort = CohortSerializer(many=False)
     date_created = serializers.DateTimeField()
+
+class QuerySerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    title = serializers.CharField()
+    description = serializers.CharField()
+    submitted_by = UserSerializer(many=False)
+    assigned_to = UserSerializer(many=False)
+    resolution_status = serializers.CharField()
+    query_type = serializers.CharField()
+    date_created = serializers.DateTimeField()
+    author = UserSerializer(many=False)

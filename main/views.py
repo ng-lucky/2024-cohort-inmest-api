@@ -8,6 +8,7 @@ from main.models import *
 from main.serializers import *
 import datetime
 from rest_framework import viewsets
+from inmest_api.utils import *
 
 
 # Create your views here.
@@ -159,5 +160,17 @@ class QueryModelViewSet(viewsets.ModelViewSet):
         query.save()
         #send email to the assignee
         return Response({"message": "Query successfully submitted"})
+    
 
+    @action(detail=False, methods=["post"])
+    def filter_queries(self, request):
+        search_text = request.data.get("search_text")
+        status = request.data.get("status")
 
+        queryset = Query.objects.all()
+        serializer = QuerySerializer(queryset, many=True)
+        
+        return generate_200_response(serializer.data)
+    
+class ClassModelViewset(viewsets.ModelViewSet):
+    pass
